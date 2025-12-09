@@ -3,7 +3,7 @@ FROM ubuntu:latest
 
 # Устанавливаем необходимые пакеты
 RUN apt-get update && \
-    DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-pip wireguard-tools curl && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y python3 python3-pip python3-venv wireguard-tools curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
@@ -26,7 +26,9 @@ WORKDIR /app
 COPY requirements.txt .
 
 # Устанавливаем зависимости проекта
-RUN pip install --no-cache-dir -r requirements.txt
+RUN python3 -m venv /opt/venv && \
+    /opt/venv/bin/pip install --upgrade pip && \
+    /opt/venv/bin/pip install --no-cache-dir -r requirements.txt
 
 # Копируем файлы проекта в контейнер
 COPY . .
